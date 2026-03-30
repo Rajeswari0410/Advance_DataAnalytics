@@ -1,4 +1,8 @@
---create object - view	
+
+IF OBJECT_ID('gold.dim_kids', 'V') IS NOT NULL
+	DROP VIEW gold.dim_kids
+GO
+--create object - view		
 CREATE VIEW gold.dim_kids AS
 SELECT 
 	ROW_NUMBER() OVER (ORDER BY age, gender, primary_device, health_impacts, urban_or_rural) AS kid_key, --PK
@@ -9,6 +13,9 @@ SELECT
 	urban_or_rural
 FROM silver.kids_screen_time;
 
+IF OBJECT_ID('gold.fact_kids', 'V') IS NOT NULL
+	DROP VIEW gold.fact_kids
+GO
 --create object - facts
 CREATE VIEW gold.fact_kids AS
 SELECT 

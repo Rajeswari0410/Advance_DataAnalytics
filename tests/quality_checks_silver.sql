@@ -33,3 +33,57 @@ FROM (
 	FROM bronze.kids_screen_time
 )t;
 
+-- Distinct age
+SELECT DISTINCT age
+FROM bronze.kids_screen_time;
+
+-- Check for out-of-range: age
+SELECT 
+age
+FROM bronze.kids_screen_time
+WHERE age < 3 OR age > 18 OR age IS NULL;
+
+-- Distinct gender
+SELECT DISTINCT gender
+FROM bronze.kids_screen_time;
+
+-- Trailing spaces: gender
+SELECT gender
+FROM bronze.kids_screen_time
+WHERE gender != TRIM(gender);
+
+-- Distinct avg_daily_screen_time_hr
+SELECT DISTINCT avg_daily_screen_time_hr
+FROM bronze.kids_screen_time;
+
+-- null value check: avg_daily_screen_time_hr
+SELECT avg_daily_screen_time_hr
+FROM bronze.kids_screen_time
+WHERE avg_daily_screen_time_hr IS NULL OR avg_daily_screen_time_hr > 24;
+
+-- Distinct primary_device
+SELECT DISTINCT primary_device
+FROM bronze.kids_screen_time;
+
+-- Trailing spaces: primary_device
+SELECT primary_device
+FROM bronze.kids_screen_time
+WHERE primary_device != TRIM(primary_device);
+
+-- Distinct exceeded_recommended_limit
+SELECT DISTINCT exceeded_recommended_limit
+FROM bronze.kids_screen_time;
+
+-- Trailing spaces: exceeded_recommended_limit
+SELECT exceeded_recommended_limit
+FROM bronze.kids_screen_time
+WHERE exceeded_recommended_limit != TRIM(exceeded_recommended_limit);
+
+-- Distinct educational_to_recreational_ratio
+SELECT DISTINCT educational_to_recreational_ratio
+FROM bronze.kids_screen_time;
+
+-- null value check: educational_to_recreational_ratio
+SELECT educational_to_recreational_ratio
+FROM bronze.kids_screen_time
+WHERE educational_to_recreational_ratio IS NULL OR educational_to_recreational_ratio > 1 OR educational_to_recreational_ratio <= 0;

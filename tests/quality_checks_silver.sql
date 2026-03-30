@@ -86,4 +86,17 @@ FROM bronze.kids_screen_time;
 -- null value check: educational_to_recreational_ratio
 SELECT educational_to_recreational_ratio
 FROM bronze.kids_screen_time
+
+--silver layer check
+SELECT 
+DISTINCT health_impacts
+FROM silver.kids_screen_time;
+
+SELECT 
+DISTINCT urban_or_rural
+FROM silver.kids_screen_time;
+
+SELECT health_impacts
+FROM silver.kids_screen_time
+WHERE TRIM(health_impacts) != health_impacts;
 WHERE educational_to_recreational_ratio IS NULL OR educational_to_recreational_ratio > 1 OR educational_to_recreational_ratio <= 0;

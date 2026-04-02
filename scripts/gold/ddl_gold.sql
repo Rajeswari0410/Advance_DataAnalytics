@@ -13,7 +13,15 @@ SELECT
 	CASE WHEN urban_or_rural = 'Urban' THEN 1
 		ELSE 0
 	END AS is_urban
-FROM silver.kids_screen_time;
+FROM (
+	SELECT DISTINCT
+		age,
+		gender,
+		primary_device,
+		health_impacts,
+		urban_or_rural
+	FROM silver.kids_screen_time
+) d;
 
 IF OBJECT_ID('gold.fact_kids', 'V') IS NOT NULL
 	DROP VIEW gold.fact_kids

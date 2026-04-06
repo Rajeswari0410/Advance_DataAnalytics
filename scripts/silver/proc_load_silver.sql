@@ -45,21 +45,31 @@ BEGIN
 			ELSE 'False'
 		END AS exceeded_recommended_limit,
 		educational_to_recreational_ratio,
-		CASE WHEN LEFT(health_impacts, 1) = '"' AND RIGHT(SUBSTRING(CONCAT(TRIM(health_impacts),' ', TRIM(urban_or_rural)), 0, LEN(CONCAT(TRIM(health_impacts),' ', TRIM(urban_or_rural)))-5), 1) = '"' 
-				THEN 
-				CASE
-					WHEN UPPER(SUBSTRING(health_impacts, 2, LEN(health_impacts) - 1)) LIKE 'P%' THEN 'Poor Sleep'
-					WHEN UPPER(SUBSTRING(health_impacts, 2, LEN(health_impacts) - 1)) LIKE 'E%' THEN 'Eye Strain'
-					WHEN UPPER(SUBSTRING(health_impacts, 2, LEN(health_impacts) - 1)) LIKE 'A%' THEN 'Anxiety'
-					WHEN UPPER(SUBSTRING(health_impacts, 2, LEN(health_impacts) - 1)) LIKE 'O%' THEN 'Obesity Risk'
-				ELSE 'None'
-				END
+		CASE WHEN SUBSTRING(CONCAT(health_impacts,' ', urban_or_rural), 1, LEN(CONCAT(health_impacts,' ', urban_or_rural))-5) LIKE '%None%' THEN 'None'
 			ELSE
-				CASE WHEN health_impacts LIKE 'P%' THEN 'Poor Sleep'
-					WHEN health_impacts LIKE 'E%' THEN 'Eye Strain'
-					WHEN health_impacts LIKE 'A%' THEN 'Anxiety'
-					WHEN health_impacts LIKE 'O%' THEN 'Obesity Risk'
-				ELSE 'None'
+				CASE 
+					WHEN LEN(CONCAT(
+							CASE WHEN SUBSTRING(CONCAT(health_impacts,' ', urban_or_rural), 1, LEN(CONCAT(health_impacts,' ', urban_or_rural))-5) LIKE '%Anxiety%' THEN 'Anxiety; ' ELSE '' END,
+							CASE WHEN SUBSTRING(CONCAT(health_impacts,' ', urban_or_rural), 1, LEN(CONCAT(health_impacts,' ', urban_or_rural))-5) LIKE '%Obesity risk%' THEN 'Obesity risk; ' ELSE '' END,
+							CASE WHEN SUBSTRING(CONCAT(health_impacts,' ', urban_or_rural), 1, LEN(CONCAT(health_impacts,' ', urban_or_rural))-5) LIKE '%Poor sleep%' THEN 'Poor sleep; ' ELSE '' END,
+							CASE WHEN SUBSTRING(CONCAT(health_impacts,' ', urban_or_rural), 1, LEN(CONCAT(health_impacts,' ', urban_or_rural))-5) LIKE '%Eye strain%' THEN 'Eye strain; ' ELSE '' END
+						)
+					) > 0
+					THEN LEFT(CONCAT(
+							CASE WHEN SUBSTRING(CONCAT(health_impacts,' ', urban_or_rural), 1, LEN(CONCAT(health_impacts,' ', urban_or_rural))-5) LIKE '%Anxiety%' THEN 'Anxiety; ' ELSE '' END,
+							CASE WHEN SUBSTRING(CONCAT(health_impacts,' ', urban_or_rural), 1, LEN(CONCAT(health_impacts,' ', urban_or_rural))-5) LIKE '%Obesity risk%' THEN 'Obesity risk; ' ELSE '' END,
+							CASE WHEN SUBSTRING(CONCAT(health_impacts,' ', urban_or_rural), 1, LEN(CONCAT(health_impacts,' ', urban_or_rural))-5) LIKE '%Poor sleep%' THEN 'Poor sleep; ' ELSE '' END,
+							CASE WHEN SUBSTRING(CONCAT(health_impacts,' ', urban_or_rural), 1, LEN(CONCAT(health_impacts,' ', urban_or_rural))-5) LIKE '%Eye strain%' THEN 'Eye strain; ' ELSE '' END
+						),
+						LEN(CONCAT(
+								CASE WHEN SUBSTRING(CONCAT(health_impacts,' ', urban_or_rural), 1, LEN(CONCAT(health_impacts,' ', urban_or_rural))-5) LIKE '%Anxiety%' THEN 'Anxiety; ' ELSE '' END,
+								CASE WHEN SUBSTRING(CONCAT(health_impacts,' ', urban_or_rural), 1, LEN(CONCAT(health_impacts,' ', urban_or_rural))-5) LIKE '%Obesity risk%' THEN 'Obesity risk; ' ELSE '' END,
+								CASE WHEN SUBSTRING(CONCAT(health_impacts,' ', urban_or_rural), 1, LEN(CONCAT(health_impacts,' ', urban_or_rural))-5) LIKE '%Poor sleep%' THEN 'Poor sleep; ' ELSE '' END,
+								CASE WHEN SUBSTRING(CONCAT(health_impacts,' ', urban_or_rural), 1, LEN(CONCAT(health_impacts,' ', urban_or_rural))-5) LIKE '%Eye strain%' THEN 'Eye strain; ' ELSE '' END
+							)
+						) - 1   -- removes last "; "
+					)
+					ELSE 'None'
 				END
 		END AS health_impacts,
 		CASE UPPER(SUBSTRING(CONCAT(health_impacts,' ', urban_or_rural), LEN(CONCAT(health_impacts,' ', urban_or_rural))-4, 5))

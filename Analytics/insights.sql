@@ -106,7 +106,31 @@ ON f.kid_key = d.kid_key
 GROUP BY d.is_urban;
 
 /* What are the most commonly reported health impacts of screen time among kids? */
-SELECT * FROM gold.dim_kids;
+-- SELECT * FROM gold.dim_kids;
+-- SELECT COUNT(*) FROM gold.fact_kids; -- all kids
+
+SELECT SUM(CASE WHEN d.health_impacts LIKE '%Anxiety%' THEN 1 ELSE 0 END) AS Anxiety,
+	SUM(CASE WHEN d.health_impacts LIKE '%Poor sleep%' THEN 1 ELSE 0 END) AS Poor_sleep,
+	SUM(CASE WHEN d.health_impacts LIKE '%Eye strain%' THEN 1 ELSE 0 END) AS Eye_strain,
+	SUM(CASE WHEN d.health_impacts LIKE '%Obesity risk%' THEN 1 ELSE 0 END) AS Obesity
+FROM gold.fact_kids f
+LEFT JOIN gold.dim_kids d
+ON f.kid_key = d.kid_key;
+
+SELECT 
+    v.impact,
+    COUNT(*) AS total
+FROM gold.fact_kids f
+JOIN gold.dim_kids d
+    ON f.kid_key = d.kid_key
+CROSS APPLY (VALUES
+    ('Anxiety'),
+    ('Poor sleep'),
+    ('Eye strain'),
+    ('Obesity risk')
+) v(impact)
+WHERE d.health_impacts LIKE '%' + v.impact + '%'
+GROUP BY v.impact;
 
 /* Which group of kids (Urban or Rural) uses devices the most? */
 SELECT primary_device, is_urban,

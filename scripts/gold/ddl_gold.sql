@@ -21,7 +21,8 @@ FROM (
 		health_impacts,
 		urban_or_rural
 	FROM silver.kids_screen_time
-) d;
+) d
+GO
 
 IF OBJECT_ID('gold.fact_kids', 'V') IS NOT NULL
 	DROP VIEW gold.fact_kids
@@ -42,4 +43,5 @@ ON kst.age = dk.age
  AND kst.gender = dk.gender
  AND kst.primary_device = dk.primary_device
  AND kst.health_impacts = dk.health_impacts
- AND CASE WHEN kst.urban_or_rural = 'Urban' THEN 1 ELSE 0 END = dk.is_urban;
+ AND CASE WHEN kst.urban_or_rural = 'Urban' THEN 1 ELSE 0 END = dk.is_urban
+GO
